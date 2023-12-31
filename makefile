@@ -30,9 +30,10 @@ run: $(OBJS)
 clean:
 	rm -r $(BUILD_DIR)
 
+f := .
 git:
 	git add $f 
-	git commit -m "$m" 
+	git commit -m "$(msg)" 
 	git push origin master
 
 -include $(DEPS)
