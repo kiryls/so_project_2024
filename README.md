@@ -1,5 +1,5 @@
 # Unhinged Atoms
-![](https://github.com/raysan5/raylib/blob/master/logo/raylib_logo_animation.gif?raw=true)
+![](https://chemistrytalk.org/wp-content/uploads/2023/03/640px-NuclearReaction.svg-1.png)
 
 ## Overview
 This project simulates some chemical reaction using multi processing architecture program. It's written in C with the help of some standard library functions for some things like:
