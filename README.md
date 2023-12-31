@@ -1,4 +1,4 @@
-# Unhinged Atoms
+# Chained Reaction
 ![](https://chemistrytalk.org/wp-content/uploads/2023/03/640px-NuclearReaction.svg-1.png)
 
 ## Overview
