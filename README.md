@@ -23,5 +23,6 @@ make run
 ## Features
 - [ ] a module for every Entity process
     - [ ] master
-    - [ ] entity 1
-    - [ ] entity 2
+    - [ ] atom
+    - [ ] activator
+    - [ ] supplier
