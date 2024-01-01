@@ -6,11 +6,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/raylib.h"
+#include "../utils/io/config_reader.h"
 
 #define FPS 60
 #define SCREEN_W 640
 #define SCREEN_H 480
-#define MASTER_ARGS 1 // 0:exec_path
+#define MASTER_ARGS 2 // 0:exec_path, 1:config_path
 
 int main(int argc, char *argv[]) {
 
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]) {
         printf("\n");
         exit(EXIT_FAILURE);
     }
+
+    ReadConfig(argv[1]);
 
     char *window_title = "Chain Reaction";
     InitWindow(SCREEN_W, SCREEN_H, window_title);
