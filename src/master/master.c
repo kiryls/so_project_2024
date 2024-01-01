@@ -1,9 +1,15 @@
+#include <assert.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include "include/raylib.h"
+#include "../include/raylib.h"
 
 int main(int argc, char *argv[]) {
 
-    char *window_title = "Template Project";
+    char *window_title = "Chain Reaction";
     InitWindow(640, 480, window_title);
 
     char *text = "Hello World";
