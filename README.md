@@ -21,6 +21,13 @@ make run
 ```
 
 ## Features
+- [ ] build system
+    - [ ] global project makefile invokes specific entity makefile
+    - [ ] master makefile
+    - [ ] atom makefile
+    - [ ] activator makefile
+    - [ ] supplier makefile
+    - [ ] who's gonna link raylib anyway?
 - [ ] a module for every Entity process
     - [ ] master
     - [ ] atom
