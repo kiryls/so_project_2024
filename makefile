@@ -2,7 +2,7 @@ TARGET_EXEC := proj_exec_name
 
 BUILD_DIR := ./build
 SRC_DIR := ./src
-BIN_DIR := $(BUILD)/bin
+BIN_DIR := $(BUILD_DIR)/bin
 
 SRCS := $(shell find $(SRC_DIR) -name '*.c')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -35,6 +35,9 @@ git:
 	git add $f 
 	git commit -m "$(msg)" 
 	git push origin master
+
+master:
+	$(MAKE) -C ./src/master
 
 -include $(DEPS)
 
