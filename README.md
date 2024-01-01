@@ -10,10 +10,8 @@ This project simulates some chemical reaction using multi processing architectur
 
 It also uses [Raylib](https://github.com/raysan5/raylib) to perform some fancy rendering to avoid doing the whole simulation in the terminal (cuz it's kinda not cool and boring)
 
-```txt
-Be aware that I'm using POSIX APIs for Unix syscalls (not SystemV's)
-as there are many more advantages (google is your friend) in doing so. 
-```
+### Beware
+I'm using POSIX APIs for Unix syscalls (not SystemV's) as there are many more advantages (google is your friend) in doing so. 
 
 ## Installation
 This is just a temporary thing. This project will eventually have a more complex build system in the future.
