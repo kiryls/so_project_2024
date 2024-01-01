@@ -22,8 +22,8 @@ make run
 
 ## Features
 - [ ] build system
-    - [ ] global project makefile invokes specific entity makefile
-    - [ ] master makefile
+    - [x] global project makefile invokes specific entity makefile
+    - [x] master makefile
     - [ ] atom makefile
     - [ ] activator makefile
     - [ ] supplier makefile
