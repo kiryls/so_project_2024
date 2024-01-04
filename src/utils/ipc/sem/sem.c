@@ -53,10 +53,6 @@ void CloseSem(const char *sem_name) {
 }
 
 void UnlinkSem(const char *sem_name) {
-    // if(sem_unlink(GetSem(sem_name)) < 0) {
-    //     fprintf(stderr, "UnlinkSem(%s) failed\n", sem_name);
-    //     exit(EXIT_FAILURE);
-    // }
     if (sem_unlink(sem_name) < 0) {
         ERRLOG("UnlinkSem(%s).sem_unlink()", sem_name);
     }
