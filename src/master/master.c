@@ -5,13 +5,20 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/fcntl.h>
+#include <sys/semaphore.h>
+#include <unistd.h>
 #include "../include/raylib.h"
-#include "../utils/io/config_reader.h"
+#include "../utils/io/file/config_reader.h"
+#include "../utils/ipc/sem/sem.h"
+#include "../utils/ipc/shmem/shmem.h"
 
 #define FPS 60
 #define SCREEN_W 640
 #define SCREEN_H 480
 #define MASTER_ARGS 2 // 0:exec_path, 1:config_path
+
+// barrier lock: https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
 
 int main(int argc, char *argv[]) {
 
@@ -29,7 +36,7 @@ int main(int argc, char *argv[]) {
     char *window_title = "Chain Reaction";
     InitWindow(SCREEN_W, SCREEN_H, window_title);
 
-    char *text = "Hello World";
+    char *text = "Boom!";
     int font_size = 20;
 
     SetTargetFPS(FPS);
@@ -39,7 +46,9 @@ int main(int argc, char *argv[]) {
 
     while (!WindowShouldClose()) {
         BeginDrawing();
+
         ClearBackground(DARKGRAY);
+
         if(fps_sync % FPS == 0) {
             if(text_is_black) {
                 text_color = BLACK;
@@ -48,6 +57,7 @@ int main(int argc, char *argv[]) {
             }
             text_is_black = !text_is_black;
         }
+
         DrawText(
             text, 
             GetScreenWidth()/2 - MeasureText(text, font_size)/2, 
@@ -55,7 +65,9 @@ int main(int argc, char *argv[]) {
             font_size, 
             text_color
         );
+
         EndDrawing();
+
         fps_sync++;
     }
 
