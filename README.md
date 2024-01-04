@@ -36,3 +36,7 @@ make run
     - [ ] atom
     - [ ] activator
     - [ ] supplier
+- [ ] loggers
+    - [x] error logger
+- [x] semaphore APIs
+- [x] shared memory APIs
