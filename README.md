@@ -13,6 +13,17 @@ It also uses [Raylib](https://github.com/raysan5/raylib) to perform some fancy r
 ### Beware
 I'm using POSIX APIs for Unix syscalls (not SystemV's) as there are many more advantages (google is your friend) in doing so. 
 
+I'm also using `arc4random()` as RNG instead of the usual combo `srand(time(NULL))` + `rand()` as it's more reliable, easier to use and more stable with a multi-process context. On Ubuntu (and maybe other distros as well) it's not part of standard C lib, so to use it you should:
+1. install `libbsd-dev` package on your machine
+2. include the BSD header in your code
+```c 
+#include <bsd/stdlib.h>
+```
+3. link the executable with `-lbsd` flag, for example:
+```shell
+gcc -o your_prog -Wall prog.c -lbsd
+```
+
 ## Installation
 This is just a temporary thing. This project will eventually have a more complex build system in the future.
 
@@ -23,11 +34,11 @@ make
 make run
 ```
 
-## Features
+## Todos
 - [ ] build system
     - [x] global project makefile invokes specific entity makefile
     - [x] master makefile
-    - [ ] atom makefile
+    - [x] atom makefile
     - [ ] activator makefile
     - [ ] supplier makefile
     - [ ] who's gonna link raylib anyway?
@@ -40,3 +51,4 @@ make run
     - [x] error logger
 - [x] semaphore APIs
 - [x] shared memory APIs
+- [x] RNG (arc4random)
