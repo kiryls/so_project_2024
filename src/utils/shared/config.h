@@ -1,6 +1,7 @@
-#ifndef CONFIG_READER_H
+#ifndef CONFIG_H
 
-#define CONFIG_PARAMS 8
+#include <string.h>
+#include "../ipc/shmem/shmem.h"
 
 typedef enum {
     CFG_ENERGY_DEMAND = 0,
@@ -13,8 +14,8 @@ typedef enum {
     CFG_ENERGY_EXPLODE_THRESHOLD
 } ConfigParams;
 
-extern int config[CONFIG_PARAMS];
+int *LoadConfig(char *filepath);
+int *GetConfig();
+void DestroyConfig();
 
-void ReadConfig(const char *config_path);
-
-#endif // !CONFIG_READER_H
+#endif // !CONFIG_H

@@ -1,18 +1,15 @@
-#include <assert.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#include "config.h"
+
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "config_reader.h"
 
 #define MAX_LINE_LEN 64
 #define MAX_PARAM_NAME_LEN 32
+#define PARAMS 8
+
+#define _config_shmem "/config_shmem"
 
 // these are default settings
-int config[] = {
+int defaults[] = {
     [CFG_ENERGY_DEMAND] =               10,     // system demands 10 units of energy each cycle
     [CFG_N_ATOMS_INIT] =                10,     // starting atoms quantity
     [CFG_N_ATOM_MAX] =                  118,    // Oganesson (Og) biggest known atom
@@ -23,10 +20,12 @@ int config[] = {
     [CFG_ENERGY_EXPLODE_THRESHOLD] =    1000    // boom threshold
 };
 
-void ReadConfig(const char *config_path) {
-    FILE *fp = fopen(config_path, "r");
+void _ReadConfig(char *filepath) {
+    int *config = GetShMem(_config_shmem, PARAMS * sizeof(int));
+
+    FILE *fp = fopen(filepath, "r");
     if (fp == NULL) {
-        printf("ERROR: master couldn't read file at '%s'\n", config_path);
+        printf("ERROR: master couldn't read file at '%s'\n", filepath);
         exit(EXIT_FAILURE);
     }
 
@@ -73,3 +72,22 @@ void ReadConfig(const char *config_path) {
 
     fclose(fp);
 }
+
+int *LoadConfig(char *filepath) {
+    int *config = (int*) CreateShMem(_config_shmem, PARAMS * sizeof(int));
+
+    memcpy(config, defaults, PARAMS * sizeof(int));
+
+    _ReadConfig(filepath);
+
+    return config;
+}
+
+int *GetConfig() {
+    return (int*) GetShMem(_config_shmem, PARAMS * sizeof(int));
+}
+
+void DestroyConfig() {
+    UnlinkShMem(_config_shmem);
+}
+

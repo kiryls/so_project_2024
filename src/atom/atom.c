@@ -4,10 +4,12 @@
 #include <unistd.h>
 
 #include "../utils/sync/sync_barrier.h"
+#include "../utils/shared/config.h"
 
 #define ATOM_ARGS 2 // 0:atom_exec, 1:atomic_number
 
 int Z;
+int *config;
 
 int main(int argc, char *argv[]) {
 
@@ -17,6 +19,8 @@ int main(int argc, char *argv[]) {
     }
 
     Z = atoi(argv[1]);
+
+    config = GetConfig();
 
     WaitOnSyncBarrier(); 
 

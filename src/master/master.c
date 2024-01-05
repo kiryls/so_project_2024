@@ -11,12 +11,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "../include/raylib.h"
-#include "../utils/io/file/config_reader.h"
 #include "../utils/ipc/sem/sem.h"
 #include "../utils/ipc/shmem/shmem.h"
 #include "../utils/sync/sync_barrier.h"
 #include "../utils/io/logger/error_logger.h"
 #include "../utils/random/random.h"
+#include "../utils/shared/config.h"
 
 #define FPS 60
 #define SCREEN_W 640
@@ -24,6 +24,7 @@
 #define MASTER_ARGS 2 // 0:master_exec, 1:config_path
 
 pid_t *atom_pids;
+int *config;
 
 // barrier lock: https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
 
@@ -58,10 +59,13 @@ void WaitForEveryone() {
 
 void ResetIPCs() {
     DestroySyncBarrier();
+    DestroyConfig();
 }
 
 void Cleanup() {
     free(atom_pids);
+    DestroySyncBarrier();
+    DestroyConfig();
 }
 
 int main(int argc, char *argv[]) {
@@ -77,15 +81,16 @@ int main(int argc, char *argv[]) {
 
     ResetIPCs();
 
-    ReadConfig(argv[1]);
+    config = LoadConfig(argv[1]);
 
     InitSyncBarrier(1 + config[CFG_N_ATOMS_INIT]);
-
+    
     InitAtoms();
 
     WaitOnSyncBarrier();
 
     printf("MASTER: ready\n");
+
 
 
     char *window_title = "Chain Reaction";
@@ -127,8 +132,6 @@ int main(int argc, char *argv[]) {
     }
 
     WaitForEveryone();
-
-    DestroySyncBarrier();
 
     Cleanup();
 
