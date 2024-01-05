@@ -1,11 +1,10 @@
 #ifndef CONFIG_READER_H
 
-#define CONFIG_PARAMS 9
+#define CONFIG_PARAMS 8
 
 typedef enum {
     CFG_ENERGY_DEMAND = 0,
     CFG_N_ATOMS_INIT,
-    CFG_N_ATOM_MIN,
     CFG_N_ATOM_MAX,
     CFG_MIN_ATOMIC_N,
     CFG_N_NEW_ATOMS,
