@@ -21,13 +21,12 @@ $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-all: $(OBJS) master
+all: $(OBJS) master atom
 
 run: $(OBJS)
-	# $(BUILD_DIR)/$(TARGET_EXEC)
 	$(MAKE) -C ./src/master run CONFIG_FILE=$(CONFIG_FILE)
 
-.PHONY: clean git
+.PHONY: clean git master atom
 clean:
 	rm -r $(BUILD_DIR)
 
@@ -39,6 +38,9 @@ git:
 
 master: $(shell find ./src/master -name '*.c')
 	$(MAKE) -C ./src/master
+
+atom: $(shell find ./src/atom -name '*.c')
+	$(MAKE) -C ./src/atom
 
 # run_master:
 # 	$(MAKE) -C ./src/master run CONFIG_FILE=$(CONFIG_FILE)
