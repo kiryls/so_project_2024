@@ -46,7 +46,7 @@ make run
     - [ ] master
         - [x] InitAtoms()
     - [ ] atom
-        - [ ] SplitAtom()
+        - [x] SplitAtom()
     - [ ] activator
     - [ ] supplier
 - [ ] loggers
@@ -55,3 +55,5 @@ make run
 - [x] shared memory APIs
 - [ ] signals
 - [x] RNG (arc4random)
+- [ ] application logics
+    - [x] system total energy
