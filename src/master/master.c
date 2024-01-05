@@ -39,7 +39,7 @@ void InitAtoms() {
 
         if (atom_pids[i] == 0) {
             char atomic_number[8];
-            sprintf(atomic_number, "%d", Rand(config[CFG_N_ATOM_MIN], config[CFG_N_ATOM_MAX]));
+            sprintf(atomic_number, "%d", Rand(1, config[CFG_N_ATOM_MAX]));
             execlp("../../build/src/atom/atom", "atom", atomic_number, NULL);
             ERRLOG("execlp(atom, Z=%s)", atomic_number);
             exit(EXIT_SUCCESS);

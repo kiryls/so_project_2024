@@ -14,7 +14,7 @@
 // these are default settings
 int config[] = {
     [CFG_ENERGY_DEMAND] =               10,     // system demands 10 units of energy each cycle
-    [CFG_N_ATOMS_INIT] =                10,      // starting atoms quantity
+    [CFG_N_ATOMS_INIT] =                10,     // starting atoms quantity
     [CFG_N_ATOM_MAX] =                  118,    // Oganesson (Og) biggest known atom
     [CFG_MIN_ATOMIC_N] =                1,      // atomic waste threshold set on Hydrogen (H)
     [CFG_N_NEW_ATOMS] =                 10,     // every STEP ns we feed this many atoms in the system
