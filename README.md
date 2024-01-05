@@ -44,11 +44,14 @@ make run
     - [ ] who's gonna link raylib anyway?
 - [ ] a module for every Entity process
     - [ ] master
+        - [x] InitAtoms()
     - [ ] atom
+        - [ ] SplitAtom()
     - [ ] activator
     - [ ] supplier
 - [ ] loggers
     - [x] error logger
 - [x] semaphore APIs
 - [x] shared memory APIs
+- [ ] signals
 - [x] RNG (arc4random)

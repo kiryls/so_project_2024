@@ -16,7 +16,7 @@
 #include "../utils/sync/sync_barrier.h"
 #include "../utils/io/logger/error_logger.h"
 #include "../utils/random/random.h"
-#include "../utils/shared/config.h"
+#include "../utils/globals/config/config.h"
 
 #define FPS 60
 #define SCREEN_W 640

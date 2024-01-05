@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 
 #include <string.h>
-#include "../ipc/shmem/shmem.h"
+#include "../../ipc/shmem/shmem.h"
 
 typedef enum {
     CFG_ENERGY_DEMAND = 0,
