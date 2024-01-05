@@ -5,7 +5,9 @@
 
 #include "../utils/sync/sync_barrier.h"
 
-#define ATOM_ARGS 2 // 0:atom_exec, 1:atom_index
+#define ATOM_ARGS 2 // 0:atom_exec, 1:atomic_number
+
+int Z;
 
 int main(int argc, char *argv[]) {
 
@@ -14,16 +16,11 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // for (int i = 3; i >= 0; i--) {
-    //     sleep(1);
-    //     printf("ATOM %s: %d ...\n", argv[1], i);
-    // } 
+    Z = atoi(argv[1]);
 
-    // WaitOnSyncBarrier(); 
+    WaitOnSyncBarrier(); 
 
-    int r = arc4random() % 10 + 1;
-
-    printf("ATOM %s: ready with random value %d\n", argv[1], r);
+    printf("ATOM: (Z = %d) created\n", Z);
 
     return EXIT_SUCCESS;
 }

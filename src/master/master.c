@@ -16,27 +16,34 @@
 #include "../utils/ipc/shmem/shmem.h"
 #include "../utils/sync/sync_barrier.h"
 #include "../utils/io/logger/error_logger.h"
+#include "../utils/random/random.h"
 
 #define FPS 60
 #define SCREEN_W 640
 #define SCREEN_H 480
 #define MASTER_ARGS 2 // 0:master_exec, 1:config_path
 
+pid_t *atom_pids;
+
 // barrier lock: https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
 
 void InitAtoms() {
-    pid_t atom_pid;
+    atom_pids = (pid_t*) malloc(config[CFG_N_ATOMS_INIT] * sizeof(pid_t));
+    if (atom_pids == NULL) {
+        fprintf(stderr, "ERROR: [master] couldn't allocate atom_pids\n");
+        return;
+    }
 
     for (int i = 0; i < config[CFG_N_ATOMS_INIT]; ++i) {
-        atom_pid = fork();
+        atom_pids[i] = fork();
 
-        if (atom_pid > 0) {
-            char index[8];
-            sprintf(index, "%d", i);
-            execlp("../../build/src/atom/atom", "atom", index, NULL);
-            ERRLOG("execlp(atom)");
+        if (atom_pids[i] == 0) {
+            char atomic_number[8];
+            sprintf(atomic_number, "%d", Rand(config[CFG_N_ATOM_MIN], config[CFG_N_ATOM_MAX]));
+            execlp("../../build/src/atom/atom", "atom", atomic_number, NULL);
+            ERRLOG("execlp(atom, Z=%s)", atomic_number);
             exit(EXIT_SUCCESS);
-        } else if (atom_pid < 0){
+        } else if (atom_pids[i] < 0){
             ERRLOG("fork(atom)");
             exit(EXIT_FAILURE);
         }
@@ -51,6 +58,10 @@ void WaitForEveryone() {
 
 void ResetIPCs() {
     DestroySyncBarrier();
+}
+
+void Cleanup() {
+    free(atom_pids);
 }
 
 int main(int argc, char *argv[]) {
@@ -75,10 +86,6 @@ int main(int argc, char *argv[]) {
     WaitOnSyncBarrier();
 
     printf("MASTER: ready\n");
-
-    WaitForEveryone();
-
-    DestroySyncBarrier();
 
 
     char *window_title = "Chain Reaction";
@@ -118,6 +125,12 @@ int main(int argc, char *argv[]) {
 
         fps_sync++;
     }
+
+    WaitForEveryone();
+
+    DestroySyncBarrier();
+
+    Cleanup();
 
     return 0;
 }
