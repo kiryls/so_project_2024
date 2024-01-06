@@ -49,16 +49,19 @@ make run
         - [x] SplitAtom()
     - [ ] activator
     - [ ] supplier
-- [ ] loggers
-    - [x] error logger
 - [x] semaphore APIs
 - [x] shared memory APIs
 - [ ] signals
     - [ ] atom handlers
     - [ ] activator handlers
     - [ ] supplier handlers
-- [x] RNG (arc4random)
 - [ ] application logics
     - [x] system total energy
     - [ ] system total waste
     - [ ] atom heirarchy
+- [ ] some useful tools
+    - [ ] dynamic collection
+    - [x] RNG (arc4random)
+    - [ ] loggers
+        - [x] error logger
+    - [x] N process barrier
