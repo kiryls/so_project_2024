@@ -3,6 +3,10 @@
 #define _system_energy "/system_energy_shmem"
 #define _system_energy_mutex "/system_energy_mutex"
 
+int Energy(int z1, int z2) {
+    return z1 * z2 - (z1 > z2 ? z1 : z2);
+}
+
 int InitSystemEnergy() {
     int *energy = (int*) CreateShMem(_system_energy, sizeof(int));
     CreateSem(_system_energy_mutex, 1);

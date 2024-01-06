@@ -3,6 +3,7 @@
 #include "../../ipc/shmem/shmem.h"
 #include "../../ipc/sem/sem.h"
 
+int Energy(int z1, int z2);
 int InitSystemEnergy();
 int GetSystemEnergy();
 void SupplyEnergyToSystem(int quantity);
