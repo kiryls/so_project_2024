@@ -1,8 +1,5 @@
-#include <assert.h>
-#include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/_types/_pid_t.h>
@@ -10,14 +7,13 @@
 #include <sys/semaphore.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
 #include "../include/raylib.h"
-#include "../utils/ipc/sem/sem.h"
-#include "../utils/ipc/shmem/shmem.h"
 #include "../utils/sync/sync_barrier.h"
 #include "../utils/io/logger/error_logger.h"
 #include "../utils/random/random.h"
-#include "../utils/globals/config/config.h"
-#include "../utils/globals/energy/energy.h"
+#include "../utils/shared/config/config.h"
+#include "../utils/shared/energy/energy.h"
 
 #define FPS 60
 #define SCREEN_W 640

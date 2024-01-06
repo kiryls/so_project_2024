@@ -5,10 +5,10 @@
 #include <unistd.h>
 
 #include "../utils/sync/sync_barrier.h"
-#include "../utils/globals/config/config.h"
+#include "../utils/shared/config/config.h"
 #include "../utils/random/random.h"
 #include "../utils/io/logger/error_logger.h"
-#include "../utils/globals/energy/energy.h"
+#include "../utils/shared/energy/energy.h"
 
 #define ATOM_ARGS 2 // 0:atom_exec, 1:atomic_number
 
