@@ -8,6 +8,7 @@
 #include "../utils/globals/config/config.h"
 #include "../utils/random/random.h"
 #include "../utils/io/logger/error_logger.h"
+#include "../utils/globals/energy/energy.h"
 
 #define ATOM_ARGS 2 // 0:atom_exec, 1:atomic_number
 
@@ -31,6 +32,8 @@ void SplitAtom() {
     }
 
     Z = Z - split_product;
+
+    SupplyEnergyToSystem(Energy(Z, split_product));
 }
 
 int main(int argc, char *argv[]) {
@@ -45,6 +48,17 @@ int main(int argc, char *argv[]) {
     config = GetConfig();
 
     WaitOnSyncBarrier(); 
+
+    printf("ATOM: (Z = %d) created\n", Z);
+
+    if(Z >= config[CFG_MIN_ATOMIC_N]) {
+        for (int i = 5; i > 0; i--) {
+            printf("ATOM (Z=%d): %ds to split...\n", Z, i);
+            sleep(1);
+        }
+
+        SplitAtom();
+    }
 
     printf("ATOM: (Z = %d) created\n", Z);
 

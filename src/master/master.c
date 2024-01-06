@@ -17,6 +17,7 @@
 #include "../utils/io/logger/error_logger.h"
 #include "../utils/random/random.h"
 #include "../utils/globals/config/config.h"
+#include "../utils/globals/energy/energy.h"
 
 #define FPS 60
 #define SCREEN_W 640
@@ -60,6 +61,7 @@ void WaitForEveryone() {
 void ResetIPCs() {
     DestroySyncBarrier();
     DestroyConfig();
+    DestroySystemEnergy();
 }
 
 void Cleanup() {
@@ -87,16 +89,19 @@ int main(int argc, char *argv[]) {
     
     InitAtoms();
 
+    InitSystemEnergy();
+
     WaitOnSyncBarrier();
 
-    printf("MASTER: ready\n");
+    printf("MASTER: system started with energy: %d MW\n", GetSystemEnergy());
 
 
 
     char *window_title = "Chain Reaction";
     InitWindow(SCREEN_W, SCREEN_H, window_title);
 
-    char *text = "Boom!";
+    char text[32];
+    sprintf(text, "%d MW", GetSystemEnergy());
     int font_size = 20;
 
     SetTargetFPS(FPS);
@@ -110,6 +115,8 @@ int main(int argc, char *argv[]) {
         ClearBackground(DARKGRAY);
 
         if(fps_sync % FPS == 0) {
+            sprintf(text, "%d MW", GetSystemEnergy());
+
             if(text_is_black) {
                 text_color = BLACK;
             } else {
