@@ -54,6 +54,11 @@ make run
 - [x] semaphore APIs
 - [x] shared memory APIs
 - [ ] signals
+    - [ ] atom handlers
+    - [ ] activator handlers
+    - [ ] supplier handlers
 - [x] RNG (arc4random)
 - [ ] application logics
     - [x] system total energy
+    - [ ] system total waste
+    - [ ] atom heirarchy
