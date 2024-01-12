@@ -16,6 +16,7 @@
 #include "../utils/shared/atoms/atom_pids.h"
 #include "../utils/shared/config/config.h"
 #include "../utils/shared/energy/energy.h"
+#include "../utils/signals/signals.h"
 #include "../utils/sync/sync_barrier.h"
 
 #define FPS 60
@@ -24,9 +25,23 @@
 #define MASTER_ARGS 2  // 0:master_exec, 1:config_path
 
 int *config;
+pid_t activator_pid;
 
 // barrier lock:
 // https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
+
+void activator_init() {
+    activator_pid = fork();
+
+    if (activator_pid == 0) {
+        execlp("../../build/src/activator/activator", "activator", NULL);
+        ERRLOG("execlp()");
+        exit(EXIT_FAILURE);
+    } else if (activator_pid < 0) {
+        ERRLOG("fork(atom)");
+        exit(EXIT_FAILURE);
+    }
+}
 
 void atoms_init() {
     atom_pids_create();
@@ -39,7 +54,7 @@ void atoms_init() {
             sprintf(atomic_number, "%d", random_get(1, config[CFG_N_ATOM_MAX]));
             execlp("../../build/src/atom/atom", "atom", atomic_number, NULL);
             ERRLOG("execlp()");
-            exit(EXIT_SUCCESS);
+            exit(EXIT_FAILURE);
         } else if (atom_pid < 0) {
             ERRLOG("fork(atom)");
             exit(EXIT_FAILURE);
@@ -76,17 +91,15 @@ int main(int argc, char *argv[]) {
 
     config = config_load(argv[1]);
 
-    sync_barrier_create(1 + config[CFG_N_ATOMS_INIT]);
+    sync_barrier_create(1 + 1 + config[CFG_N_ATOMS_INIT]);
 
     atoms_init();
 
+    activator_init();
+
     system_energy_init();
 
-    printf("MASTER: sync barrier height = %d\n", 1 + config[CFG_N_ATOMS_INIT]);
-
     sync_barrier_wait();
-
-    printf("MASTER: system started with energy: %d MW\n", system_energy_get());
 
     char *window_title = "Chain Reaction";
     InitWindow(SCREEN_W, SCREEN_H, window_title);
@@ -125,8 +138,12 @@ int main(int argc, char *argv[]) {
     }
 
     for (size_t i = 0; i < atom_pids_size_get(); ++i) {
-        kill(atom_get(i), SIGABRT);
+        kill(atom_get(i), EVENT_TERMINATION);
     }
+
+    kill(activator_pid, EVENT_TERMINATION);
+
+    printf("MASTER: here\n");
 
     wait_for_everyone_to_return();
 
