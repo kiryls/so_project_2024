@@ -36,32 +36,39 @@ make run
 
 ## Todos
 - [ ] build system
-    - [x] global project makefile invokes specific entity makefile
-    - [x] master makefile
-    - [x] atom makefile
-    - [ ] activator makefile
+    - [X] global project makefile invokes specific entity makefile
+    - [X] master makefile
+    - [X] atom makefile
+    - [X] activator makefile
     - [ ] supplier makefile
     - [ ] who's gonna link raylib anyway?
 - [ ] a module for every Entity process
     - [ ] master
-        - [x] InitAtoms()
-    - [ ] atom
-        - [x] SplitAtom()
-    - [ ] activator
+        - [X] InitAtoms()
+        - [X] init activator
+        - [ ] init supplier
+    - [X] atom
+    - [X] activator
+        - [X] SplitAtom()
     - [ ] supplier
-- [x] semaphore APIs
-- [x] shared memory APIs
+- [X] semaphore APIs
+- [X] shared memory APIs
 - [ ] signals
-    - [ ] atom handlers
-    - [ ] activator handlers
+    - [X] atom handlers
+    - [X] activator handlers
     - [ ] supplier handlers
 - [ ] application logics
-    - [x] system total energy
+    - [X] system total energy
     - [ ] system total waste
     - [ ] atom heirarchy
 - [ ] some useful tools
     - [ ] dynamic collection
-    - [x] RNG (arc4random)
+    - [X] RNG (arc4random)
     - [ ] loggers
-        - [x] error logger
-    - [x] N process barrier
+        - [X] error logger
+        - [ ] file loggers
+            - [ ] master
+            - [ ] atom
+            - [ ] activator
+            - [ ] supplier
+    - [X] N process barrier
