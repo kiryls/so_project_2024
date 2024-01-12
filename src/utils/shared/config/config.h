@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 
 #include <string.h>
+
 #include "../../ipc/shmem/shmem.h"
 
 typedef enum {
@@ -14,8 +15,8 @@ typedef enum {
     CFG_ENERGY_EXPLODE_THRESHOLD
 } ConfigParams;
 
-int *LoadConfig(char *filepath);
-int *GetConfig();
-void DestroyConfig();
+int *config_load(char *filepath);
+int *config_get();
+void config_remove();
 
-#endif // !CONFIG_H
+#endif  // !CONFIG_H

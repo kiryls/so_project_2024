@@ -4,31 +4,31 @@
 #define _height_mutex "/barrier_height_mutex"
 #define _height_count "/barrier_height_shmem"
 
-void InitSyncBarrier(unsigned int height) {
-    int *barrier_height = (int*) CreateShMem(_height_count, sizeof(int));
-    *barrier_height = height; 
+void sync_barrier_create(unsigned int height) {
+    int *barrier_height = (int *)shmem_create(_height_count, sizeof(int));
+    *barrier_height = height;
 
-    CreateSem(_sync_barrier, 0);
-    CreateSem(_height_mutex, 1);
+    sem_create(_sync_barrier, 0);
+    sem_create(_height_mutex, 1);
 }
 
-void WaitOnSyncBarrier() {
-    int *barrier_height = (int*) GetShMem(_height_count, sizeof(int));
+void sync_barrier_wait() {
+    int *barrier_height = (int *)shmem_get(_height_count, sizeof(int));
 
-    AcquireSem(_height_mutex);
+    sem_acquire(_height_mutex);
     *barrier_height = *barrier_height - 1;
-    ReleaseSem(_height_mutex);
+    sem_release(_height_mutex);
 
     if (*barrier_height <= 0) {
-        ReleaseSem(_sync_barrier);
+        sem_release(_sync_barrier);
     }
 
-    AcquireSem(_sync_barrier);
-    ReleaseSem(_sync_barrier);
+    sem_acquire(_sync_barrier);
+    sem_release(_sync_barrier);
 }
 
-void DestroySyncBarrier() {
-    UnlinkShMem(_height_count);
-    UnlinkSem(_sync_barrier);
-    UnlinkSem(_height_mutex);
+void sync_barrier_remove() {
+    shmem_remove(_height_count);
+    sem_remove(_sync_barrier);
+    sem_remove(_height_mutex);
 }

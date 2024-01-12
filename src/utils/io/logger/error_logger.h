@@ -1,12 +1,11 @@
 #ifndef ERROR_LOGGER_H
 
-
-#define ERRLOG(...)    \
-    {                                           \
-        char errormsg[256];                     \
-        sprintf(errormsg, "ERROR: ");           \
-        sprintf(errormsg+7, __VA_ARGS__);       \
-        perror(errormsg);                       \
+#define ERRLOG(arg)                                                          \
+    {                                                                        \
+        char errormsg[256];                                                  \
+        sprintf(errormsg, "ERROR: in file '%s' at line %d for %s", __FILE__, \
+                __LINE__, arg);                                              \
+        perror(errormsg);                                                    \
     }
 
-#endif // !ERROR_LOGGER_H
+#endif  // !ERROR_LOGGER_H

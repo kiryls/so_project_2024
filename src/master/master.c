@@ -1,103 +1,98 @@
+#include <signal.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/_types/_pid_t.h>
+#include <sys/_types/_size_t.h>
 #include <sys/fcntl.h>
 #include <sys/semaphore.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include "../include/raylib.h"
-#include "../utils/sync/sync_barrier.h"
 #include "../utils/io/logger/error_logger.h"
 #include "../utils/random/random.h"
+#include "../utils/shared/atoms/atom_pids.h"
 #include "../utils/shared/config/config.h"
 #include "../utils/shared/energy/energy.h"
+#include "../utils/sync/sync_barrier.h"
 
 #define FPS 60
 #define SCREEN_W 640
 #define SCREEN_H 480
-#define MASTER_ARGS 2 // 0:master_exec, 1:config_path
+#define MASTER_ARGS 2  // 0:master_exec, 1:config_path
 
-pid_t *atom_pids;
 int *config;
 
-// barrier lock: https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
+// barrier lock:
+// https://stackoverflow.com/questions/6331301/implementing-an-n-process-barrier-using-semaphores
 
-void InitAtoms() {
-    atom_pids = (pid_t*) malloc(config[CFG_N_ATOMS_INIT] * sizeof(pid_t));
-    if (atom_pids == NULL) {
-        fprintf(stderr, "ERROR: [master] couldn't allocate atom_pids\n");
-        return;
-    }
+void atoms_init() {
+    atom_pids_create();
 
     for (int i = 0; i < config[CFG_N_ATOMS_INIT]; ++i) {
-        atom_pids[i] = fork();
+        pid_t atom_pid = fork();
 
-        if (atom_pids[i] == 0) {
+        if (atom_pid == 0) {
             char atomic_number[8];
-            sprintf(atomic_number, "%d", Rand(1, config[CFG_N_ATOM_MAX]));
+            sprintf(atomic_number, "%d", random_get(1, config[CFG_N_ATOM_MAX]));
             execlp("../../build/src/atom/atom", "atom", atomic_number, NULL);
-            ERRLOG("execlp(atom, Z=%s)", atomic_number);
+            ERRLOG("execlp()");
             exit(EXIT_SUCCESS);
-        } else if (atom_pids[i] < 0){
+        } else if (atom_pid < 0) {
             ERRLOG("fork(atom)");
             exit(EXIT_FAILURE);
         }
     }
 }
 
-void WaitForEveryone() {
+void wait_for_everyone_to_return() {
     int status = 0;
     pid_t wpid;
-    while ((wpid = wait(&status)) > 0);
+    while ((wpid = wait(&status)) > 0) {
+        // do nothing
+    }
 }
 
-void ResetIPCs() {
-    DestroySyncBarrier();
-    DestroyConfig();
-    DestroySystemEnergy();
-}
-
-void Cleanup() {
-    free(atom_pids);
-    DestroySyncBarrier();
-    DestroyConfig();
+void ipcs_cleanup() {
+    sync_barrier_remove();
+    config_remove();
+    system_energy_remove();
+    atom_pids_remove();
 }
 
 int main(int argc, char *argv[]) {
-
     if (argc < MASTER_ARGS) {
         printf("ERROR: master process needs more args. Provided:");
-        for(int i = 0; i < argc; ++i) {
+        for (int i = 0; i < argc; ++i) {
             printf(" %s", argv[i]);
         }
         printf("\n");
         exit(EXIT_FAILURE);
     }
 
-    ResetIPCs();
+    ipcs_cleanup();
 
-    config = LoadConfig(argv[1]);
+    config = config_load(argv[1]);
 
-    InitSyncBarrier(1 + config[CFG_N_ATOMS_INIT]);
-    
-    InitAtoms();
+    sync_barrier_create(1 + config[CFG_N_ATOMS_INIT]);
 
-    InitSystemEnergy();
+    atoms_init();
 
-    WaitOnSyncBarrier();
+    system_energy_init();
 
-    printf("MASTER: system started with energy: %d MW\n", GetSystemEnergy());
+    printf("MASTER: sync barrier height = %d\n", 1 + config[CFG_N_ATOMS_INIT]);
 
+    sync_barrier_wait();
 
+    printf("MASTER: system started with energy: %d MW\n", system_energy_get());
 
     char *window_title = "Chain Reaction";
     InitWindow(SCREEN_W, SCREEN_H, window_title);
 
     char text[32];
-    sprintf(text, "%d MW", GetSystemEnergy());
+    sprintf(text, "%d MW", system_energy_get());
     int font_size = 20;
 
     SetTargetFPS(FPS);
@@ -110,10 +105,10 @@ int main(int argc, char *argv[]) {
 
         ClearBackground(DARKGRAY);
 
-        if(fps_sync % FPS == 0) {
-            sprintf(text, "%d MW", GetSystemEnergy());
+        if (fps_sync % FPS == 0) {
+            sprintf(text, "%d MW", system_energy_get());
 
-            if(text_is_black) {
+            if (text_is_black) {
                 text_color = BLACK;
             } else {
                 text_color = RED;
@@ -121,22 +116,21 @@ int main(int argc, char *argv[]) {
             text_is_black = !text_is_black;
         }
 
-        DrawText(
-            text, 
-            GetScreenWidth()/2 - MeasureText(text, font_size)/2, 
-            GetScreenHeight()/2 - font_size/2, 
-            font_size, 
-            text_color
-        );
+        DrawText(text, GetScreenWidth() / 2 - MeasureText(text, font_size) / 2,
+                 GetScreenHeight() / 2 - font_size / 2, font_size, text_color);
 
         EndDrawing();
 
         fps_sync++;
     }
 
-    WaitForEveryone();
+    for (size_t i = 0; i < atom_pids_size_get(); ++i) {
+        kill(atom_get(i), SIGABRT);
+    }
 
-    Cleanup();
+    wait_for_everyone_to_return();
+
+    ipcs_cleanup();
 
     return 0;
 }

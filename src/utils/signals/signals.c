@@ -1,7 +1,8 @@
 #include "signals.h"
+
 #include "../io/logger/error_logger.h"
 
-void SetSignal(int signal, SignalHandler handler, bool restart) {
+void signal_set(int signal, SignalHandler handler, bool restart) {
     struct sigaction action;
 
     action.sa_handler = handler;
@@ -12,6 +13,6 @@ void SetSignal(int signal, SignalHandler handler, bool restart) {
     }
 
     if (sigaction(signal, &action, NULL) < 0) {
-        ERRLOG("ERROR: SetSignal(sig_code = %d)", signal);
+        ERRLOG("signal_set().sigaction()");
     }
 }

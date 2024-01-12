@@ -1,5 +1,5 @@
 #ifndef RANDOM_H
 
-int Rand(unsigned int lower, unsigned int upper);
+int random_get(unsigned int lower, unsigned int upper);
 
-#endif // !RANDOM_H
+#endif  // !RANDOM_H
