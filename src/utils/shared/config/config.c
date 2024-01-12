@@ -36,7 +36,7 @@ void __config_read__(char *filepath) {
 
     while (fgets(line, MAX_LINE_LEN, fp) != NULL) {
         sscanf(line, "%s %d", key, &val);
-        printf("key:%s, val:%d\n", key, val);
+        printf("CONFIG: %s = %d\n", key, val);
 
         if (strstr(key, "ENERGY_DEMAND") != NULL) {
             config[CFG_ENERGY_DEMAND] = val;
