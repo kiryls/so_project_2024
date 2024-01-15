@@ -16,3 +16,15 @@ void signal_set(int signal, SignalHandler handler, bool restart) {
         ERRLOG("signal_set().sigaction()");
     }
 }
+
+char *signal_to_str(int signal) {
+    if (signal == SIG_SPLIT) {
+        return "SPLIT";
+    }
+
+    if (signal == SIG_TERMINATION) {
+        return "TERMINATION";
+    }
+
+    return "";
+}
