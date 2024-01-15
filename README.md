@@ -42,6 +42,7 @@ make run
     - [X] activator makefile
     - [ ] supplier makefile
     - [ ] who's gonna link raylib anyway?
+
 - [ ] a module for every Entity process
     - [ ] master
         - [X] InitAtoms()
@@ -51,18 +52,23 @@ make run
     - [X] activator
         - [X] SplitAtom()
     - [ ] supplier
+
 - [X] semaphore APIs
+
 - [X] shared memory APIs
+
 - [ ] signals
     - [X] atom handlers
     - [X] activator handlers
     - [ ] supplier handlers
+
 - [ ] application logics
     - [X] system total energy
     - [ ] system total waste
-    - [ ] atom heirarchy
+    - [?] atom heirarchy
+
 - [ ] some useful tools
-    - [ ] dynamic collection
+    - [/] dynamic collections
     - [X] RNG (arc4random)
     - [ ] loggers
         - [X] error logger
