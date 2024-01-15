@@ -26,9 +26,13 @@ all: $(OBJS) master atom activator
 run: $(OBJS)
 	$(MAKE) -C ./src/master run CONFIG_FILE=$(CONFIG_FILE)
 
-.PHONY: clean git master atom activator
+.PHONY: clean git master atom activator x
 clean:
 	rm -r $(BUILD_DIR)
+
+x:
+	kill $(shell pgrep atom)
+	kill $(shell pgrep activator)
 
 f := .
 git:
@@ -46,4 +50,3 @@ activator: $(shell find ./src/activator -name '*.c')
 	$(MAKE) -C ./src/activator
 
 -include $(DEPS)
-
