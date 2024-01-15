@@ -1,43 +1,53 @@
 #include "energy.h"
 
 #include <stdio.h>
+#include <sys/semaphore.h>
 
 #define _system_energy "/system_energy_shmem"
 #define _system_energy_mutex "/system_energy_mutex"
 
+int *global_energy;
+
 int energy(int z1, int z2) { return z1 * z2 - (z1 > z2 ? z1 : z2); }
 
-int system_energy_init() {
-    int *energy = (int *)shmem_create(_system_energy, sizeof(int));
-    sem_create(_system_energy_mutex, 1);
+void system_energy_init() {
+    global_energy = (int *)shmem_create(_system_energy, sizeof(int));
+    if (global_energy == NULL) {
+        fprintf(stderr, "ERROR: in file %s, line %d - couldn't create energy\n",
+                __FILE__, __LINE__);
+        return;
+    }
 
-    *energy = 0;
+    sem_t *sem = sem_create(_system_energy_mutex, 1);
+    if (sem == NULL) {
+        fprintf(stderr,
+                "ERROR: in file %s, line %d - couldn't create system energy "
+                "mutex\n",
+                __FILE__, __LINE__);
+        return;
+    }
 
-    return *energy;
+    *global_energy = 0;
 }
 
-int system_energy_get() {
-    int *energy = (int *)shmem_get(_system_energy, sizeof(int));
-    return *energy;
+void system_energy_get() {
+    global_energy = (int *)shmem_get(_system_energy, sizeof(int));
+    if (global_energy == NULL) {
+        fprintf(stderr, "ERROR: in file %s, line %d - couldn't get energy\n",
+                __FILE__, __LINE__);
+        return;
+    }
 }
 
 void system_energy_supply(int quantity) {
-    int *energy = (int *)shmem_get(_system_energy, sizeof(int));
-
-    printf("SYSTEM: total energy = %d MW\n", *energy);
-
     sem_acquire(_system_energy_mutex);
-    *energy += quantity;
+    *global_energy += quantity;
     sem_release(_system_energy_mutex);
-
-    printf("SYSTEM: supplied %d MW, new total = %d MW\n", quantity, *energy);
 }
 
 void system_energy_absorb(int quantity) {
-    int *energy = (int *)shmem_get(_system_energy, sizeof(int));
-
     sem_acquire(_system_energy_mutex);
-    *energy -= quantity;
+    *global_energy -= quantity;
     sem_release(_system_energy_mutex);
 }
 
